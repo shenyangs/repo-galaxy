@@ -1,63 +1,53 @@
 {
   "project": "repo-galaxy",
   "state": "PASS",
-  "scenario": "从 GitHub 真实源码或明确标注的本地源码样例解析静态相对导入，以中文交互图查看模块与实际依赖，支持小屏、键盘操作及错误恢复。",
+  "scenario": "全幅源码网络首屏，自动解析明确标注的本地样例；搜索真实文件，选择后展开详情并沿实际导入跳转。验证桌面、小屏、键盘及加载/空/错误状态。",
   "checks": [
-    {
-      "id": "production-build",
-      "passed": true,
-      "evidence": "artifacts/build-zh.log"
-    },
-    {
-      "id": "parser-fetch-and-doctor",
-      "passed": true,
-      "evidence": "artifacts/test-zh.log",
-      "passedCount": 8
-    },
-    {
-      "id": "chinese-ui-mobile-keyboard-recovery",
-      "passed": true,
-      "evidence": "artifacts/e2e-zh.log",
-      "passedCount": 6
-    },
-    {
-      "id": "recorded-chinese-demo",
-      "passed": true,
-      "evidence": "artifacts/demo-zh.log",
-      "passedCount": 1
-    },
-    {
-      "id": "locked-dependency-reinstall",
-      "passed": true,
-      "evidence": "artifacts/setup-zh.log"
-    },
     {
       "id": "environment-doctor",
       "passed": true,
-      "evidence": "artifacts/doctor-zh.log"
+      "evidence": "artifacts/doctor-redesign.log"
     },
     {
-      "id": "missing-dependencies-diagnostic",
+      "id": "production-build",
       "passed": true,
-      "evidence": "artifacts/doctor-missing-zh.log",
-      "expectedExitCode": 1
+      "evidence": "artifacts/build-redesign.log"
     },
     {
-      "id": "chinese-desktop-screenshot",
+      "id": "parser-fetch-and-node-boundaries",
       "passed": true,
-      "evidence": "artifacts/repo-galaxy-detail.png"
+      "evidence": "artifacts/test-redesign.log",
+      "passedCount": 19
     },
     {
-      "id": "chinese-mobile-screenshot",
+      "id": "graph-search-navigation-states-responsive",
+      "passed": true,
+      "evidence": "artifacts/e2e-redesign.log",
+      "passedCount": 8
+    },
+    {
+      "id": "recorded-redesign-demo",
+      "passed": true,
+      "evidence": "artifacts/demo-redesign.log",
+      "passedCount": 1
+    },
+    {
+      "id": "readme-network-screenshot",
+      "passed": true,
+      "evidence": "docs/images/network.png"
+    },
+    {
+      "id": "readme-imports-screenshot",
+      "passed": true,
+      "evidence": "docs/images/imports.png"
+    },
+    {
+      "id": "mobile-screenshot",
       "passed": true,
       "evidence": "artifacts/repo-galaxy-mobile-zh.png"
     }
   ],
   "commands": [
-    {
-      "cmd": "npm run setup",
-      "exitCode": 0
-    },
     {
       "cmd": "npm run doctor",
       "exitCode": 0
@@ -77,11 +67,6 @@
     {
       "cmd": "npm run demo",
       "exitCode": 0
-    },
-    {
-      "cmd": "npm run doctor -- --dependencies-dir=artifacts/missing-dependencies",
-      "exitCode": 1,
-      "expectedExitCode": 1
     }
   ],
   "liveModel": false,
@@ -92,14 +77,22 @@
     "仅解析 TS/JS 静态相对导入，不支持动态导入、require、路径别名或包解析。",
     "公开 GitHub 可能限流；最多 60 个文件、每文件 100 KB、合计 1 MB。",
     "本轮网络边界测试使用 mock；真实公开 GitHub 结果属于前一轮验证。",
-    "本轮安装按锁文件使用已有缓存，并复用现有 Chromium 与 FFmpeg；全新浏览器下载与全新机器安装未验证。",
+    "复用现有 Chromium 与 FFmpeg；全新浏览器下载与全新机器安装未验证。",
     "已在 macOS 验证；Windows/Linux 尚未实际运行。",
     "历史失败日志保留；本轮最终 build/test/e2e/demo 均成功。"
   ],
   "priorEvidence": [
     {
       "evidence": "artifacts/github-live.json",
-      "description": "前一轮真实公开仓库 smoke；本轮中文化未重新进行在线验证。"
+      "description": "此前真实公开仓库 smoke；本轮设计重做未重新进行在线验证。"
+    },
+    {
+      "evidence": "artifacts/setup-zh.log",
+      "description": "此前按锁文件使用已有缓存安装成功。"
+    },
+    {
+      "evidence": "artifacts/doctor-missing-zh.log",
+      "description": "此前缺依赖诊断按预期退出 1；本轮单元测试继续覆盖该行为。"
     }
   ]
 }

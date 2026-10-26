@@ -2,7 +2,7 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {root,supportedNode,browserEnvironment,browserStatus} from './local-tools.mjs';
 function run(args,env=process.env){const result=spawnSync(process.execPath,args,{cwd:root,env,stdio:'inherit'});if(result.error||result.status!==0){console.error('安装失败：请检查网络、磁盘空间和上方错误，修复后重新运行 npm run setup。不会修改系统设置。');process.exit(result.status||1);}}
-if(!supportedNode()){console.error('Node.js 版本不支持。请使用 Node.js 22.12+（22 系列）或 24+ 后重试。');process.exit(1);}
+if(!supportedNode()){console.error('Node.js 版本不支持。请使用 Node.js 22.12+（22 系列）、24 系列或 26+ 后重试。');process.exit(1);}
 if(!process.env.npm_execpath){console.error('请通过 npm run setup 启动安装。');process.exit(1);}
 console.log('第 1 步：按锁文件安装项目依赖；缓存仅写入本项目 .npm-cache。');
 run([process.env.npm_execpath,'ci','--cache',path.join(root,'.npm-cache')]);

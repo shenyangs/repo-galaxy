@@ -4,7 +4,7 @@ import net from 'node:net';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 export const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-export function supportedNode(version=process.versions.node){const [major,minor]=version.split('.').map(Number);return major===22?minor>=12:major>=24;}
+export function supportedNode(version=process.versions.node){const [major,minor]=version.split('.').map(Number);return major===22?minor>=12:major===24||major>=26;}
 export function browserEnvironment(env=process.env){return {...env,PLAYWRIGHT_BROWSERS_PATH:env.PLAYWRIGHT_BROWSERS_PATH||path.join(root,'.browser-cache')};}
 export function browserStatus(modulesDir=path.join(root,'node_modules'),env=browserEnvironment()){
  try{
@@ -22,7 +22,7 @@ export function browserStatus(modulesDir=path.join(root,'node_modules'),env=brow
 export async function portAvailable(port){return new Promise(resolve=>{const server=net.createServer();server.once('error',()=>resolve(false));server.listen(port,'127.0.0.1',()=>server.close(()=>resolve(true)));});}
 export async function diagnose({modulesDir=path.join(root,'node_modules'),ports=[4202,5202],version=process.versions.node,env=browserEnvironment()}={}){
  const messages=[];let ok=true;const report=(passed,message)=>{if(!passed)ok=false;messages.push(`${passed?'通过':'需处理'}：${message}`);};
- report(supportedNode(version),`Node.js ${version}；要求 22.12+（22 系列）或 24+，建议使用受支持的 LTS 版本。`);
+ report(supportedNode(version),`Node.js ${version}；要求 22.12+（22 系列）、24 系列或 26+，建议使用受支持的 LTS 版本。`);
  const manifest=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
  const missing=Object.keys({...manifest.dependencies,...manifest.devDependencies}).filter(name=>!fs.existsSync(path.join(modulesDir,name,'package.json')));
  report(missing.length===0,missing.length?`缺少项目依赖：${missing.join('、')}。请运行 npm ci --cache .npm-cache 或 npm run setup。`:'项目依赖已找到。');

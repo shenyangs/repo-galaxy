@@ -13,7 +13,7 @@ describe('bounded GitHub fetching',()=>{
   const result=await mapRepository('https://github.com/test/capped');expect(result.modules).toHaveLength(60);expect(result.truncated).toBe(true);expect(blobs).toBe(60);expect(maximum).toBeLessThanOrEqual(4);expect(result.edges).toHaveLength(0);
   const count=fetcher.mock.calls.length;expect((await mapRepository('https://github.com/test/capped')).cached).toBe(true);expect(fetcher).toHaveBeenCalledTimes(count);
  });
- it('reports rate limits explicitly',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('',{status:403})));await expect(mapRepository('https://github.com/test/limited')).rejects.toThrow('rate limit');});
+ it('reports rate limits explicitly',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('',{status:403})));await expect(mapRepository('https://github.com/test/limited')).rejects.toThrow('限流');});
  it('skips sources beyond file and total byte caps',async()=>{
   let blobs=0;vi.stubGlobal('fetch',vi.fn(async(url:string)=>{
    if(url.endsWith('/repos/test/bytes'))return Response.json({default_branch:'main'});

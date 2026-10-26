@@ -1,29 +1,38 @@
-# A02 — RepoGalaxy
+# A02 — RepoGalaxy · 代码星图
 
-Build a visually stunning interactive constellation of ACTUAL GitHub repository files and imports. Read ./AGENTS.md first. One 110-minute focused MVP, only in this directory.
+## 项目目标
 
-## Stack / sources
-- React + TypeScript + `@xyflow/react` and `dagre` or other preinstalled layout package, Express API. Graph may look 2.5D; do not claim WebGL/3D if it isn't.
-- Query GitHub's public REST repo metadata and Git tree; determine default branch, fetch at most 60 TS/JS files up to 100KB each (or a total 1MB). Follow only `github.com`, `api.github.com`, or `raw.githubusercontent.com` HTTPS; validate owner/repo with allowlisted characters. Timeouts, concurrency max 4, caching 5 minutes, handle API rate-limit.
-- Parse actual relative import specifiers with TypeScript source parser (`ts.preProcessFile` or static AST), resolve local target paths only. Each graph edge MUST correspond to an observed import. No fake dependencies.
-- If GitHub unavailable, allow explicit labelled `EXAMPLE FIXTURE` with a small included mini-repo source fixture.
+把真实 GitHub 仓库中的 TypeScript / JavaScript 文件及导入关系展示为可交互二维星图。优先完成“界面操作 → 实际源码读取与解析 → 可见结果 → 自动断言”的完整闭环。只在本项目目录工作，不修改父目录、兄弟项目或系统配置，不读取用户凭据，不创建子 Agent。
 
-## P0 happy path
-1. Paste a GitHub public repository URL into top input and press 'Map repository'.
-2. Render interactive force/level graph: source modules as bright nodes and import links as directional edges; pan/zoom, hover highlights, click displays exact file path and imports.
-3. Top badges show real file count, edge count, selected source. Subtle moving lines or star particles; keep frame rate sane with 60 nodes.
-4. A `Load sample` action uses a clearly named real fixture. Proper loading/errors and rate-limit state.
+## 技术与来源
 
-## Must prove
-- Unit test fixture: `a.ts` imports `./b`; exactly one resolved edge, no edge for a non-existent file.
-- E2E: click sample, graph appears; click module -> exact path and import names visible; negative test invalid GitHub URL rejected.
-- `tests/demo.spec.ts` records loading the fixture and navigating actual graph and screenshot/video.
-- README explicitly says only TS/JS static relative imports in MVP; GitHub API may be rate limited.
+使用 TypeScript、React、Vite、Express、React Flow、Dagre、Playwright。网页端口固定 4202，API 端口固定 5202，只绑定 127.0.0.1；保留 `/api/health`。
 
-## X demo narrative
-0–2s: paste URL; 2–7s: starfield explodes into repo map; 7–16s: hover module and all dependencies light up; 16–23s: source paths displayed. Tagline 'A GitHub repo, as a galaxy.'
+实时模式查询公开 GitHub 元数据，确定默认分支，读取 Git 树及源码 blob。只允许 GitHub 指定 HTTPS 域名；实现实际仅访问 api.github.com，拒绝重定向。严格校验 owner/repo，最多读取 60 个 TS/JS 文件、每文件 100 KB、合计 1 MB、并发最多 4、请求超时 12 秒、缓存 5 分钟，清晰处理限流。
 
+使用 TypeScript 源码解析器识别静态相对导入；图中每条边必须对应实际观察到的导入。GitHub 不可用时，可主动加载明确标注“本地源码样例（FIXTURE）”的项目内小型源码仓库。禁止默默降级、虚构依赖、伪造模型输出和测试结果。本项目无需模型推理或 Key。
 
-Execute within this directory only. Run npm install, implement, then build/test/e2e/demo. Preserve real logs and status.json.
+## 核心操作
 
-This is an authorized independent sprint execution. Start implementing now, no confirmation. Do not spawn subagents. All writes limited to this app directory; use npm install --cache .npm-cache and keep .npm-cache ignored. Existing Playwright browsers may be read from ~/Library/Caches/ms-playwright; if install required use PLAYWRIGHT_BROWSERS_PATH inside this project. Install dependencies, replace starter tests with meaningful behavior tests, run build/test/e2e/demo and preserve actual logs, screenshot and video. Do not read user credentials or other project data. Missing model keys: runnable clearly labelled fixture and PARTIAL status. Add LICENSE. Verify and finish, not merely plan.
+1. 输入公开 GitHub 仓库地址，点击“生成星图”。
+2. 展示可平移、缩放的模块图与方向连线；悬停突出联系，点击显示完整文件路径及实际导入。
+3. 显示真实文件数、导入边数和数据来源；“加载样例”明确标注来源。处理忙碌、错误、限流与无结果空态。
+
+## 中文与易用性
+
+界面、正常可见 API 提示、状态、错误、帮助、可访问标签、README 和本项目说明以中文为主；品牌与代码标识保留。提供首次三步引导、小屏布局、键盘焦点与恢复操作。
+
+提供跨平台 `npm run setup` 与 `npm run doctor`。前者仅安装项目依赖和测试浏览器，后者用中文检查 Node、依赖、浏览器及端口，不要求无关 Key。说明操作系统命令差异、依赖作用、失败恢复及未验证安装路径。避免重复下载已有巨大浏览器缓存。
+
+## 必须验证
+
+- 单元测试：a.ts 导入 ./b 只能产生一条到 b.ts 的实际边；不存在目标不能产生边。
+- 端到端测试：样例出现，模块点击展示精确路径和导入，可继续跳转；非法 GitHub URL 被后端拒绝。
+- 中文、小屏、键盘和网络失败恢复须保持真实行为断言。
+- `tests/demo.spec.ts` 实际操作图谱，保存中文截图与 Playwright 视频。
+- 实际运行 `npm run build`、`npm run test`、`npm run e2e`、`npm run demo`；失败修复后重跑并保留日志。
+- 验证 doctor 正常与缺依赖场景，说明全新安装未验证项，不伪造结果。
+
+## 交付
+
+更新中文 README、`.env.example`、MIT LICENSE、锁文件、合理 `.gitignore` 和 `status.json`（格式见 AGENTS.md）。证据保存在 artifacts，不把凭据、日志、视频、缓存或个人绝对路径提交到 Git。完成后创建独立提交并报告 SHA、实际验证结果、证据路径与限制。公开仓库的推送由主对话统一执行，本对话不推送。

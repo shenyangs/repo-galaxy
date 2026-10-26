@@ -1,40 +1,67 @@
 {
   "project": "repo-galaxy",
   "state": "PASS",
-  "scenario": "Read actual TS/JS source from GitHub or explicit source fixture, parse relative imports, display interactive graph, inspect and follow source modules.",
+  "scenario": "从 GitHub 真实源码或明确标注的本地源码样例解析静态相对导入，以中文交互图查看模块与实际依赖，支持小屏、键盘操作及错误恢复。",
   "checks": [
     {
       "id": "production-build",
       "passed": true,
-      "evidence": "artifacts/build-verified.log"
+      "evidence": "artifacts/build-zh.log"
     },
     {
-      "id": "parser-and-fetch-limits",
+      "id": "parser-fetch-and-doctor",
       "passed": true,
-      "evidence": "artifacts/test-verified.log"
+      "evidence": "artifacts/test-zh.log",
+      "passedCount": 8
     },
     {
-      "id": "ui-to-api-to-graph",
+      "id": "chinese-ui-mobile-keyboard-recovery",
       "passed": true,
-      "evidence": "artifacts/e2e-verified.log"
+      "evidence": "artifacts/e2e-zh.log",
+      "passedCount": 6
     },
     {
-      "id": "recorded-demo",
+      "id": "recorded-chinese-demo",
       "passed": true,
-      "evidence": "artifacts/demo-verified.log"
+      "evidence": "artifacts/demo-zh.log",
+      "passedCount": 1
     },
     {
-      "id": "live-public-github",
+      "id": "locked-dependency-reinstall",
       "passed": true,
-      "evidence": "artifacts/github-live.json"
+      "evidence": "artifacts/setup-zh.log"
     },
     {
-      "id": "screenshot",
+      "id": "environment-doctor",
+      "passed": true,
+      "evidence": "artifacts/doctor-zh.log"
+    },
+    {
+      "id": "missing-dependencies-diagnostic",
+      "passed": true,
+      "evidence": "artifacts/doctor-missing-zh.log",
+      "expectedExitCode": 1
+    },
+    {
+      "id": "chinese-desktop-screenshot",
       "passed": true,
       "evidence": "artifacts/repo-galaxy-detail.png"
+    },
+    {
+      "id": "chinese-mobile-screenshot",
+      "passed": true,
+      "evidence": "artifacts/repo-galaxy-mobile-zh.png"
     }
   ],
   "commands": [
+    {
+      "cmd": "npm run setup",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run doctor",
+      "exitCode": 0
+    },
     {
       "cmd": "npm run build",
       "exitCode": 0
@@ -50,17 +77,29 @@
     {
       "cmd": "npm run demo",
       "exitCode": 0
+    },
+    {
+      "cmd": "npm run doctor -- --dependencies-dir=artifacts/missing-dependencies",
+      "exitCode": 1,
+      "expectedExitCode": 1
     }
   ],
   "liveModel": false,
   "fixturesUsed": true,
   "demoVideo": "artifacts/playwright/demo/demo-record-source-fixture-exploration/video.webm",
   "limitations": [
-    "Static analysis only; no model inference is required or claimed.",
-    "TS/JS static relative imports only; no dynamic imports, require, aliases or package resolution.",
-    "Public GitHub may rate limit; maximum 60 files, 100 KB each, 1 MB total.",
-    "Only one real public repository was smoke-tested; deterministic fetch tests use mocks.",
-    "Fresh browser download stalled and was interrupted; final browser tests reused an existing local browser through environment overrides.",
-    "Historical failed build/test/e2e logs retained locally; final four commands all passed."
+    "静态源码分析，不调用 AI 模型，无需 Key。",
+    "仅解析 TS/JS 静态相对导入，不支持动态导入、require、路径别名或包解析。",
+    "公开 GitHub 可能限流；最多 60 个文件、每文件 100 KB、合计 1 MB。",
+    "本轮网络边界测试使用 mock；真实公开 GitHub 结果属于前一轮验证。",
+    "本轮安装按锁文件使用已有缓存，并复用现有 Chromium 与 FFmpeg；全新浏览器下载与全新机器安装未验证。",
+    "已在 macOS 验证；Windows/Linux 尚未实际运行。",
+    "历史失败日志保留；本轮最终 build/test/e2e/demo 均成功。"
+  ],
+  "priorEvidence": [
+    {
+      "evidence": "artifacts/github-live.json",
+      "description": "前一轮真实公开仓库 smoke；本轮中文化未重新进行在线验证。"
+    }
   ]
 }

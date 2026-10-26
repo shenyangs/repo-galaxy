@@ -24,8 +24,8 @@ export function buildGraph(files: SourceFile[]) {
   return {modules,edges};
 }
 export function parseRepository(input: unknown) {
-  if(typeof input!=='string'||input.length>250) throw new Error('Enter a public GitHub repository URL.');
+  if(typeof input!=='string'||input.length>250) throw new Error('请输入公开 GitHub 仓库地址。');
   const match=/^https:\/\/github\.com\/([A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))\/([A-Za-z0-9_.-]{1,100})\/?$/.exec(input.trim());
-  if(!match||['.','..'].includes(match[2])) throw new Error('Use https://github.com/owner/repository (no branch or extra path).');
+  if(!match||['.','..'].includes(match[2])) throw new Error('请使用 https://github.com/owner/repository 格式，不要添加分支或其他路径。');
   return {owner:match[1],repo:match[2].replace(/\.git$/,'')};
 }

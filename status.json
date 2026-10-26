@@ -1,0 +1,66 @@
+{
+  "project": "repo-galaxy",
+  "state": "PASS",
+  "scenario": "Read actual TS/JS source from GitHub or explicit source fixture, parse relative imports, display interactive graph, inspect and follow source modules.",
+  "checks": [
+    {
+      "id": "production-build",
+      "passed": true,
+      "evidence": "artifacts/build-verified.log"
+    },
+    {
+      "id": "parser-and-fetch-limits",
+      "passed": true,
+      "evidence": "artifacts/test-verified.log"
+    },
+    {
+      "id": "ui-to-api-to-graph",
+      "passed": true,
+      "evidence": "artifacts/e2e-verified.log"
+    },
+    {
+      "id": "recorded-demo",
+      "passed": true,
+      "evidence": "artifacts/demo-verified.log"
+    },
+    {
+      "id": "live-public-github",
+      "passed": true,
+      "evidence": "artifacts/github-live.json"
+    },
+    {
+      "id": "screenshot",
+      "passed": true,
+      "evidence": "artifacts/repo-galaxy-detail.png"
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run test",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run e2e",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run demo",
+      "exitCode": 0
+    }
+  ],
+  "liveModel": false,
+  "fixturesUsed": true,
+  "demoVideo": "artifacts/playwright/demo/demo-record-source-fixture-exploration/video.webm",
+  "limitations": [
+    "Static analysis only; no model inference is required or claimed.",
+    "TS/JS static relative imports only; no dynamic imports, require, aliases or package resolution.",
+    "Public GitHub may rate limit; maximum 60 files, 100 KB each, 1 MB total.",
+    "Only one real public repository was smoke-tested; deterministic fetch tests use mocks.",
+    "Fresh browser download stalled and was interrupted; final browser tests reused an existing local browser through environment overrides.",
+    "Historical failed build/test/e2e logs retained locally; final four commands all passed."
+  ]
+}

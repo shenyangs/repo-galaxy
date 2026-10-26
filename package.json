@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "concurrently -k -n web,api \"npm:dev:web\" \"npm:dev:api\"",
@@ -13,19 +13,20 @@
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
     "e2e": "playwright test",
-    "demo": "playwright test tests/demo.spec.ts",
+    "demo": "playwright test tests/demo.spec.ts --output=artifacts/playwright/demo",
     "check": "npm run build && npm run test && npm run e2e"
   },
   "dependencies": {
-    "react": "*",
-    "react-dom": "*",
+    "@xyflow/react": "*",
+    "dagre": "*",
     "express": "*",
     "lucide-react": "*",
-    "@xyflow/react": "*",
-    "dagre": "*"
+    "react": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
-    "@playwright/test": "*",
+    "@playwright/test": "1.58.2",
+    "@types/dagre": "*",
     "@types/express": "*",
     "@types/node": "*",
     "@types/react": "*",
@@ -33,9 +34,8 @@
     "@vitejs/plugin-react": "*",
     "concurrently": "*",
     "tsx": "*",
-    "typescript": "*",
+    "typescript": "5.9.3",
     "vite": "*",
-    "vitest": "*",
-    "@types/dagre": "*"
+    "vitest": "*"
   }
 }

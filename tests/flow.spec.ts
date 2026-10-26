@@ -1,3 +1,2 @@
-import {test, expect} from '@playwright/test';
-// TEMPLATE_TEST_REPLACE: Agent must replace with domain-specific real-world assertion before PASS.
-test('starter page renders', async ({page}) => { await page.goto('/'); await expect(page.getByRole('heading', {name:'repo-galaxy'})).toBeVisible(); });
+import {test,expect} from '@playwright/test';
+test('API health and invalid payload limits',async({request})=>{const health=await request.get('/api/health');expect(await health.json()).toEqual({ok:true,project:'repo-galaxy'});const invalid=await request.post('/api/map',{data:{url:123}});expect(invalid.status()).toBe(400);const large=await request.post('/api/map',{data:{url:'x'.repeat(3000)}});expect(large.status()).toBe(413);});
